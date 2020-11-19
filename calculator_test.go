@@ -97,19 +97,11 @@ func TestDivide(t *testing.T) {
 
 	for _, tc := range testCases {
 		got, err := calculator.Divide(tc.a, tc.b)
-		if tc.errorExpected && err != nil {
-			return
+		if tc.errorExpected != (err != nil) {
+			t.Fatalf("Divide(%f, %f) unexpected error status: %s", tc.a, tc.b, err)
 		}
 
-		if tc.errorExpected && err == nil {
-			t.Fatalf("Divide(%f, %f) expected to fail, but didn't", tc.a, tc.b)
-		}
-
-		if err != nil {
-			t.Fatalf("%s: Divide(%f, %f) failed with %s", tc.message, tc.a, tc.b, err)
-		}
-
-		if got != tc.want {
+		if !tc.errorExpected && got != tc.want {
 			t.Errorf("%s: Divide(%f, %f): want %f, got %f", tc.message, tc.a, tc.b, tc.want, got)
 		}
 	}
