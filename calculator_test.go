@@ -2,6 +2,8 @@ package calculator_test
 
 import (
 	"calculator"
+	"math"
+	"math/rand"
 	"testing"
 )
 
@@ -105,4 +107,30 @@ func TestDivide(t *testing.T) {
 			t.Errorf("%s: Divide(%f, %f): want %f, got %f", tc.message, tc.a, tc.b, tc.want, got)
 		}
 	}
+}
+
+func TestAddRandom(t *testing.T) {
+	t.Parallel()
+	testCases := []testCase{}
+
+	for i := 0; i < 1000; i++ {
+		sum := rand.Float64() * 100
+		part := rand.Float64() * 100
+		testCases = append(testCases, testCase{a: part, b: sum - part, want: sum})
+	}
+
+	for _, tc := range testCases {
+		got := calculator.Add(tc.a, tc.b)
+		if RoundAtFour(got) != RoundAtFour(tc.want) {
+			t.Errorf("Add(%f, %f): want %f, got %f", tc.a, tc.b, tc.want, got)
+		}
+	}
+}
+
+func RoundAtFour(x float64) float64 {
+	return Round(x, 0.0005)
+}
+
+func Round(x, unit float64) float64 {
+	return math.Round(x/unit) * unit
 }
