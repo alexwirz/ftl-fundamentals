@@ -121,16 +121,45 @@ func TestAddRandom(t *testing.T) {
 
 	for _, tc := range testCases {
 		got := calculator.Add(tc.a, tc.b)
-		if RoundAtFour(got) != RoundAtFour(tc.want) {
+		if !closeEnough(got, tc.want) {
 			t.Errorf("Add(%f, %f): want %f, got %f", tc.a, tc.b, tc.want, got)
 		}
 	}
 }
 
-func RoundAtFour(x float64) float64 {
-	return Round(x, 0.0005)
+func roundAtFour(x float64) float64 {
+	return round(x, 0.0005)
 }
 
-func Round(x, unit float64) float64 {
+func round(x, unit float64) float64 {
 	return math.Round(x/unit) * unit
+}
+
+func closeEnough(a, b float64) bool {
+	return roundAtFour(a) == roundAtFour(b)
+}
+
+func TestSqrt(t *testing.T) {
+	t.Parallel()
+	testCases := []testCase{
+		{a: 4, want: 2},
+		{a: 0, want: 0},
+		{a: -1, errorExpected: true},
+	}
+
+	for i := 0; i < 100; i++ {
+		factor := rand.Float64() * 100
+		testCases = append(testCases, testCase{a: factor * factor, want: factor})
+	}
+
+	for _, tc := range testCases {
+		got, err := calculator.Sqrt(tc.a)
+		if tc.errorExpected != (err != nil) {
+			t.Fatalf("Sqrt(%f, %f) unexpected error status: %s", tc.a, tc.b, err)
+		}
+
+		if !closeEnough(got, tc.want) {
+			t.Errorf("Sqrt(%f): want %f, got %f", tc.a, tc.want, got)
+		}
+	}
 }
