@@ -51,20 +51,21 @@ func TestMultiply(t *testing.T) {
 type testCase struct {
 	a, b float64
 	want float64
+	message string
 }
 
 func TestMultiply2(t *testing.T) {
 	t.Parallel()
 	testCases := []testCase{
-		{a: 2, b: 2, want: 4},
-		{a: 1, b: 1, want: 1},
-		{a: 5, b: 0, want: 0},
-		{a: 3, b: -1, want: -3},
+		{a: 2, b: 2, want: 4, message: "Multiply two positive numbers"},
+		{a: 3, b: 1, want: 3, message: "Multiply by one"},
+		{a: 5, b: 0, want: 0, message: "Mutliply by zero"},
+		{a: 3, b: -1, want: -3, message: "Multiply by minus one"},
 	}
 	for _, tc := range testCases {
 		got := calculator.Multiply(tc.a, tc.b)
 		if got != tc.want {
-			t.Errorf("Multiply(%f, %f): want %f, got %f", tc.a, tc.b, tc.want, got)
+			t.Errorf("%s: Multiply(%f, %f): want %f, got %f", tc.message, tc.a, tc.b, tc.want, got)
 		}
 	}
 }
