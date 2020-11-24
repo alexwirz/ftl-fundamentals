@@ -34,10 +34,7 @@ func TestSubstract2(t *testing.T) {
 		{a: 3, b: -1, want: 4},
 	}
 	for _, tc := range testCases {
-		got := calculator.Subtract(tc.a, tc.b)
-		if got != tc.want {
-			t.Errorf("Substract(%f, %f): want %f, got %f", tc.a, tc.b, tc.want, got)
-		}
+		checkTestCase(tc, calculator.Subtract, t)
 	}
 }
 
@@ -65,11 +62,9 @@ func TestMultiply2(t *testing.T) {
 		{a: 5, b: 0, want: 0, message: "Mutliply by zero"},
 		{a: 3, b: -1, want: -3, message: "Multiply by minus one"},
 	}
+
 	for _, tc := range testCases {
-		got := calculator.Multiply(tc.a, tc.b)
-		if got != tc.want {
-			t.Errorf("%s: Multiply(%f, %f): want %f, got %f", tc.message, tc.a, tc.b, tc.want, got)
-		}
+		checkTestCase(tc, calculator.Multiply, t)
 	}
 }
 
@@ -82,10 +77,7 @@ func TestAdd2(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		got := calculator.Add(tc.a, tc.b)
-		if got != tc.want {
-			t.Errorf("Add(%f, %f): want %f, got %f", tc.a, tc.b, tc.want, got)
-		}
+		checkTestCase(tc, calculator.Add, t)
 	}
 }
 
@@ -120,10 +112,15 @@ func TestAddRandom(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		got := calculator.Add(tc.a, tc.b)
-		if !closeEnough(got, tc.want) {
-			t.Errorf("Add(%f, %f): want %f, got %f", tc.a, tc.b, tc.want, got)
-		}
+		checkTestCase(tc, calculator.Add, t)
+	}
+}
+
+func checkTestCase(tc testCase, act func(a, b float64) float64, t *testing.T) {
+	got := act(tc.a, tc.b)
+
+	if !closeEnough(got, tc.want) {
+		t.Errorf("xxx(%f, %f): want %f, got %f", tc.a, tc.b, tc.want, got)
 	}
 }
 
